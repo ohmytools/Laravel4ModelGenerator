@@ -32,7 +32,8 @@ foreach ($data as $key => $value) {
 	# code...
 	$string = '<?php
 class '.$key.' extends \Eloquent {
-  public $table = "'.$key.'";';
+  public $table = "'.$key.'";
+  ';
   foreach ($value as $k => $v) {
   	$string .= 'public $'.$v[1] . ';
   ';

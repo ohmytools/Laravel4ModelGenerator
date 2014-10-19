@@ -5,10 +5,13 @@
  * Date: 18/10/14
  * Time: 23:20
  */
-$user = readline("user:");
-$pass = readline("pass:");
-$host = readline("host:");
-$db = readline("db:");
+
+$data = include 'app/config/database.php';
+$index = "mysql";
+$user = $data["connections"][$index]["username"];
+$pass = $data["connections"][$index]["password"]; 
+$host = $data["connections"][$index]["host"];
+$db = $data["connections"][$index]["database"];
 
 $dbh = new PDO("mysql:dbname=".$db.";host=".$host,$user,$pass);
 
@@ -32,50 +35,49 @@ foreach ($data as $key => $value) {
 	# code...
 	$string = '<?php
 class '.$key.' extends \Eloquent {
-  public $table = "'.$key.'";
-  ';
+    public $table = "'.$key.'";
+    ';
   foreach ($value as $k => $v) {
   	$string .= 'public $'.$v[1] . ';
-  ';
+    ';
   }
 
   $string .='
-  public static function remove($id)
-  {
-  	$obj = '.$key.' :: find($id);
-  	if(count($obj) > 0)
-  	{
-		return $obj -> delete();
-  	}
-  }
+    public static function remove($id)
+    {
+  	    $obj = '.$key.' :: find($id);
+  	    if(count($obj) > 0)
+  	    {
+		    return $obj -> delete();
+  	    }
+    }
 
-  public static function getOne($id)
-  {
-  	return '.$key.'::find($id);
-  }
+    public static function getOne($id)
+    {
+  	    return '.$key.'::find($id);
+    }
   
-  public static function getList()
-  {
-  	return '.$key.'::get();
-  }
+    public static function getList()
+    {
+  	    return '.$key.'::get();
+    }
 ';
     foreach ($value as $k => $v) {
  $string .=  '
-  public static function update'.$v[1].'($id , $'.$v[1].')
-  {
-	 $obj = '.$key.'::getOne($id);
-	 if(count($obj) > 0)
-	 {
- 		 $obj -> '.$v[1].' = $'.$v[1].';
-		 $obj -> save();
-	 }
-  }
-'
- ;
+    public static function update'.$v[1].'($id , $'.$v[1].')
+    {
+  	   $obj = '.$key.'::getOne($id);
+  	   if(count($obj) > 0)
+  	   {
+   		     $obj -> '.$v[1].' = $'.$v[1].';
+  		     $obj -> save();
+  	   }
+    }
+   ';
     	
     }
  $string .=  '  
-  public static function insert(';
+    public static function insert(';
 			$args = "";
 			foreach ($value as $k => $v) {
 	        	$args.= '$'.$v[1].', ';
@@ -83,17 +85,17 @@ class '.$key.' extends \Eloquent {
 	        $args = substr($args, 0,-2);
 	        $string .= $args;
 			$string .=')
-  {
-    $obj = new '.$key.'();
-    ';
-	        foreach ($value as $k => $v) {
-	        	$string .= '$obj -> '.$v[1].' = $'.$v[1].';
-    ';
-	        }
-	          
-	        $string.= '$obj -> save();
-    return $obj -> id;
-  }
+    {
+      $obj = new '.$key.'();
+      ';
+  	        foreach ($value as $k => $v) {
+  	        	$string .= '$obj -> '.$v[1].' = $'.$v[1].';
+      ';
+  	        }
+  	          
+  	        $string.= '$obj -> save();
+      return $obj -> id;
+    }
 
 }';
 $fh = fopen("app/models/$key.php", "w+");

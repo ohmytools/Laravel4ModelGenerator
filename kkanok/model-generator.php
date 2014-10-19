@@ -40,7 +40,7 @@ class '.$key.' extends \Eloquent {
   }
 
   $string .='
-  public static function delete($id)
+  public static function remove($id)
   {
   	$obj = '.$key.' :: find($id);
   	if(count($obj) > 0)
@@ -61,7 +61,7 @@ class '.$key.' extends \Eloquent {
 ';
     foreach ($value as $k => $v) {
  $string .=  '
-  public function update'.$v[1].'($id , $'.$v[1].')
+  public static function update'.$v[1].'($id , $'.$v[1].')
   {
 	 $obj = '.$key.'::getOne($id);
 	 if(count($obj) > 0)

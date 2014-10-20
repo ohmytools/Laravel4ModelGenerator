@@ -37,10 +37,7 @@ foreach ($data as $key => $value) {
 class '.$key.' extends \Eloquent {
     public $table = "'.$key.'";
     ';
-  foreach ($value as $k => $v) {
-  	$string .= 'public $'.$v[1] . ';
-    ';
-  }
+
 
   $string .='
     public static function remove($id)
@@ -66,12 +63,12 @@ class '.$key.' extends \Eloquent {
  $string .=  '
     public static function update'.$v[1].'($id , $'.$v[1].')
     {
-  	   $obj = '.$key.'::getOne($id);
-  	   if(count($obj) > 0)
-  	   {
+  	     $obj = '.$key.'::getOne($id);
+  	     if(count($obj) > 0)
+  	     {
    		     $obj -> '.$v[1].' = $'.$v[1].';
   		     $obj -> save();
-  	   }
+  	     }
     }
    ';
     	
@@ -86,15 +83,15 @@ class '.$key.' extends \Eloquent {
 	        $string .= $args;
 			$string .=')
     {
-      $obj = new '.$key.'();
+        $obj = new '.$key.'();
       ';
   	        foreach ($value as $k => $v) {
-  	        	$string .= '$obj -> '.$v[1].' = $'.$v[1].';
+  	        	$string .= '  $obj -> '.$v[1].' = $'.$v[1].';
       ';
   	        }
   	          
-  	        $string.= '$obj -> save();
-      return $obj -> id;
+  	        $string.= '  $obj -> save();
+        return $obj -> id;
     }
 
 }';

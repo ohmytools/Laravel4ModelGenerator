@@ -16,10 +16,10 @@ $db = $data["connections"][$index]["database"];
 $dbh = new PDO("mysql:dbname=".$db.";host=".$host,$user,$pass);
 
 $sth = $dbh->prepare("select table_name , column_name from information_schema.columns
-where table_schema = '$db'
+where table_schema = ?
 order by table_name,ordinal_position");
 
-$sth->execute([]);
+$sth->execute([$db]);
 
 $result = $sth->fetchAll();
 
